@@ -12,6 +12,18 @@
   .layout-center {
     @apply max-w-screen-xl mx-auto;
   }
+  .green {
+    @apply text-[#59871F] bg-[#59871F] bg-opacity-20;
+  }
+  .blue {
+    @apply text-[#1F8787] bg-[#1F8787] bg-opacity-20;
+  }
+  .red {
+    @apply text-[#F0493E] bg-[#F0493E] bg-opacity-20;
+  }
+  .purple {
+    @apply text-[#5A58A0] bg-[#5A58A0] bg-opacity-20;
+  }
 }
 
 .background {

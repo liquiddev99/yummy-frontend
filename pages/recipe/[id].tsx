@@ -1,11 +1,21 @@
+import { Lora } from "@next/font/google";
 import { gql, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { AiOutlineClockCircle } from "react-icons/ai";
+import { BsPeople } from "react-icons/bs";
+import { HiOutlineFire } from "react-icons/hi";
 
-import { getNutritionString } from "utils/recipe";
+import MealTag from "../../components/recipe/MealTag";
 import { IRecipe } from "types/recipe";
+import Cuisine from "@/components/recipe/Cuisine";
+import DetailRecipeSkeleton from "@/components/skeleton/DetailRecipeSkeleton";
+
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 const RECIPE_BY_ID = gql`
   query Recipe($id: ID!) {
@@ -17,6 +27,7 @@ const RECIPE_BY_ID = gql`
       rating
       numberOfServings
       ingredientLines
+      mealTags
       ingredients {
         name
       }
@@ -85,61 +96,88 @@ export default function Recipe() {
     setRecipe(data.recipe);
   }, [data]);
 
-  if (loading) return <div className="layout-center">Loading...</div>;
-  if (error) return <p className="layout-center">Error: {error.message}</p>;
+  if (loading) return <DetailRecipeSkeleton />;
+  if (error)
+    return <p className="layout-center min-h-screen">Error: {error.message}</p>;
 
   return (
     <div className="layout-center mt-4">
       {recipe ? (
         <div>
           <div className="flex">
-            <div>
+            <div className="w-[43%] min-h-[350px] max-h-[420px] overflow-hidden relative">
               <Image
                 src={recipe.mainImage}
-                alt="Author Avatar"
-                width={600}
-                height={200}
+                alt="Recipe"
+                fill={true}
                 style={{ objectFit: "cover" }}
+                className="rounded"
               />
             </div>
-            <div className="ml-5 flex-grow">
-              <h3 className="text-3xl">{data.recipe.name}</h3>
-              {recipe.cuisines && (
-                <div className="text-slate-600">
-                  {recipe.cuisines.join(", ")}
+            <div className="ml-5 flex-grow flex flex-col">
+              <h3 className={`text-5xl mb-3 ${lora.className} font-medium`}>
+                {data.recipe.name}
+              </h3>
+              {recipe.cuisines?.length ? (
+                <div className="text-slate-600 mb-3 flex">
+                  {recipe.cuisines.map((cuisine) => (
+                    <Cuisine cuisine={cuisine} key={crypto.randomUUID()} />
+                  ))}
+                </div>
+              ) : (
+                ""
+              )}
+
+              {recipe.mealTags && (
+                <div className="flex items-center mb-3">
+                  {recipe.mealTags.map((mealTag) => (
+                    <MealTag mealTag={mealTag} key={crypto.randomUUID()} />
+                  ))}
                 </div>
               )}
-              {recipe.totalTime && (
-                <div className="flex items-center text-slate-600">
-                  <ClockIcon className="h-4 w-4 mr-2" />
-                  <span>{recipe.totalTime}</span>
+              <div className="flex-grow">
+                <div className="flex items-end mb-2">
+                  <AiOutlineClockCircle className="w-7 h-7 mr-1" />
+                  <span className="text-lg mr-1">Total Time:</span>
+                  <span className="text-lg">{recipe.totalTime}</span>
                 </div>
-              )}
-              <div className="flex">
-                <div className="w-1/2">
-                  <h3 className="text-2xl text-emerald-600">Ingredients</h3>
-                  <ul className="list-disc ml-4">
-                    {recipe.ingredientLines.map((ingredient) => (
-                      <li key={ingredient}>{ingredient}</li>
-                    ))}
-                  </ul>
+                <div className="flex items-end mb-2">
+                  <HiOutlineFire className="w-7 h-7 mr-1" />
+                  <span className="text-lg mr-1">Calories: </span>
+                  <span className="text-lg">
+                    {(recipe.nutritionalInfo.calories * 1000).toFixed(1)} Kcals
+                  </span>
                 </div>
-                {/*
-                <div className="w-1/2">
-                  <h3 className="text-2xl text-red-500">Nutritions</h3>
-                  <div>{getNutritionString(recipe.nutritionalInfo)}</div>
+                <div className="flex items-end">
+                  <BsPeople className="w-7 h-7 mr-1" />
+                  <span className="text-lg mr-1">Servings: </span>
+                  <span className="text-lg">{recipe.numberOfServings}</span>
                 </div>
-                */}
               </div>
             </div>
           </div>
 
-          <div className="mt-5">
-            <ol className="list-decimal ml-4">
-              {recipe.instructions.map((instruction) => (
-                <li key={instruction}>{instruction}</li>
-              ))}
-            </ol>
+          <div className="mt-8 flex">
+            <div className="w-1/2 rounded-xl mr-5">
+              <h3 className={`${lora.className} font-medium text-4xl mb-2`}>
+                Ingredients
+              </h3>
+              <ul className="list-disc ml-4 text-lg">
+                {recipe.ingredientLines.map((ingredient) => (
+                  <li key={ingredient}>{ingredient}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="w-1/2 ml-5">
+              <h3 className={`${lora.className} font-medium text-4xl mb-2`}>
+                Directions
+              </h3>
+              <ol className="list-decimal ml-6 text-lg">
+                {recipe.instructions.map((instruction) => (
+                  <li key={instruction}>{instruction}</li>
+                ))}
+              </ol>
+            </div>
           </div>
         </div>
       ) : (

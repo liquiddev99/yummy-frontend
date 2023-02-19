@@ -1,7 +1,21 @@
 import Head from "next/head";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import PopularRecipes from "components/recipe/PopularRecipes";
 
 export default function Home() {
+  const [textSearch, setTextSearch] = useState("");
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTextSearch(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!textSearch) return;
+    router.push(`/search?q=${textSearch}`);
+  };
   return (
     <>
       <Head>
@@ -12,17 +26,20 @@ export default function Home() {
       </Head>
       <div className="background text-slate-100">
         <div className="w-full h-full bg-black bg-opacity-70">
-          <div className="h-[550px] flex flex-col items-center justify-center mb-10 pb-10">
-            <h2 className="text-6xl mb-3 font-bold">
+          <div className="h-[600px] flex flex-col items-center justify-center mb-10 pb-10">
+            <h2 className="text-6xl mb-3 font-semibold">
               The best place to find your recipe
             </h2>
             <div>Want to learn cook but confused how to start?</div>
             <div className="mb-3">No need to worry again</div>
-            <input
-              type="text"
-              className="text-slate-800 px-2 py-1 rounded outline-none w-72"
-              placeholder="Search for Recipes"
-            />
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                className="text-slate-800 px-2 py-1 rounded outline-none w-72"
+                placeholder="Search for Recipes"
+                onChange={handleChange}
+              />
+            </form>
           </div>
         </div>
       </div>

@@ -2,7 +2,8 @@ import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 
 import { IRecipeCard } from "types/recipe";
-import RecipeCard from "./RecipeCard";
+import RecipeCardSkeletonList from "@/components/skeleton/RecipeCardSkeletonList";
+import RecipeCardList from "./RecipeCardList";
 
 const POP_RECIPES = gql`
   {
@@ -12,10 +13,8 @@ const POP_RECIPES = gql`
           id
           name
           mainImage
-          instructions
           totalTime
           mealTags
-          cuisines
         }
       }
     }
@@ -54,12 +53,14 @@ export default function PopularRecipes() {
         instructions: recipe.node.instructions,
         totalTime: recipe.node.totalTime,
         mealTags: recipe.node.mealTags,
-        cuisines: recipe.node.cuisines,
       };
     });
 
     setRecipes(recipes);
   }, [data]);
+
+  if (!loading && error)
+    return <p className="layout-center min-h-screen">Error: {error.message}</p>;
 
   return (
     <div className="layout-center">
@@ -69,23 +70,8 @@ export default function PopularRecipes() {
           We provide a variety of recipes with high taste from famous chef
         </p>
       </div>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <div className="grid grid-cols-4 gap-8 content-start">
-          {recipes &&
-            recipes.map((recipe: IRecipeCard) => (
-              <RecipeCard
-                key={recipe.id}
-                id={recipe.id}
-                mainImage={recipe.mainImage}
-                name={recipe.name}
-                totalTime={recipe.totalTime}
-                mealTags={recipe.mealTags}
-              />
-            ))}
-        </div>
-      )}
+      {loading && <RecipeCardSkeletonList />}
+      {recipes && <RecipeCardList recipes={recipes} />}
     </div>
   );
 }

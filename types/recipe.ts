@@ -16,6 +16,7 @@ export interface IRecipe {
   authorAvatar: string;
   cuisines: string[];
   ingredientLines: string[];
-  nutritionalInfo: object;
+  nutritionalInfo: { calories: number };
   instructions: string[];
+  numberOfServings: number;
 }
