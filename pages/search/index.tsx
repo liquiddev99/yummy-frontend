@@ -102,6 +102,7 @@ export default function RecipeSearch() {
 
   useEffect(() => {
     if (loading) setRecipes([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
   if (loading) return <RecipeCardSkeletonList />;
