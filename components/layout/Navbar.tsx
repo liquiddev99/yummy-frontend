@@ -32,12 +32,18 @@ export default function Navbar() {
             onChange={handleChange}
           />
         </form>
-        <button className="py-1 px-6 rounded-xl border border-red-500 text-red-500 mr-5">
+        <Link
+          href="/signup"
+          className="py-1 px-6 rounded-xl border border-red-500 text-red-500 mr-5"
+        >
           Sign Up
-        </button>
-        <button className="py-1 px-6 rounded-xl border border-red-500 bg-red-500 text-slate-100">
+        </Link>
+        <Link
+          href="/signin"
+          className="py-1 px-6 rounded-xl border border-red-500 bg-red-500 text-slate-100"
+        >
           Sign In
-        </button>
+        </Link>
       </div>
     </div>
   );

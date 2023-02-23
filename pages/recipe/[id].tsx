@@ -6,11 +6,13 @@ import Image from "next/image";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BsPeople } from "react-icons/bs";
 import { HiOutlineFire } from "react-icons/hi";
+import { v4 as uuidv4 } from "uuid";
 
 import MealTag from "../../components/recipe/MealTag";
 import { IRecipe } from "types/recipe";
 import Cuisine from "@/components/recipe/Cuisine";
 import DetailRecipeSkeleton from "@/components/skeleton/DetailRecipeSkeleton";
+import SimilarRecipes from "@/components/recipe/SimilarRecipes";
 
 const lora = Lora({
   subsets: ["latin"],
@@ -121,7 +123,7 @@ export default function Recipe() {
               {recipe.cuisines?.length ? (
                 <div className="text-slate-600 mb-3 flex">
                   {recipe.cuisines.map((cuisine) => (
-                    <Cuisine cuisine={cuisine} key={crypto.randomUUID()} />
+                    <Cuisine cuisine={cuisine} key={uuidv4()} />
                   ))}
                 </div>
               ) : (
@@ -131,7 +133,7 @@ export default function Recipe() {
               {recipe.mealTags && (
                 <div className="flex items-center mb-3">
                   {recipe.mealTags.map((mealTag) => (
-                    <MealTag mealTag={mealTag} key={crypto.randomUUID()} />
+                    <MealTag mealTag={mealTag} key={uuidv4()} />
                   ))}
                 </div>
               )}
@@ -179,6 +181,7 @@ export default function Recipe() {
               </ol>
             </div>
           </div>
+          <SimilarRecipes />
         </div>
       ) : (
         <p>Not Found</p>

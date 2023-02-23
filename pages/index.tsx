@@ -1,9 +1,50 @@
 import Head from "next/head";
+import { GetStaticProps } from "next";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import PopularRecipes from "components/recipe/PopularRecipes";
+import { gql } from "@apollo/client";
 
-export default function Home() {
+import client from "utils/apolloClient";
+import { IRecipeCard } from "types/recipe";
+
+export const getStaticProps: GetStaticProps = async () => {
+  const { data } = await client.query({
+    query: gql`
+      {
+        popularRecipes {
+          edges {
+            node {
+              id
+              name
+              mainImage
+              totalTime
+              mealTags
+            }
+          }
+        }
+      }
+    `,
+  });
+  const recipes = data.popularRecipes.edges.map((recipe: any) => {
+    return {
+      id: recipe.node.id,
+      name: recipe.node.name,
+      mainImage: recipe.node.mainImage,
+      totalTime: recipe.node.totalTime,
+      mealTags: recipe.node.mealTags,
+    };
+  });
+
+  return {
+    props: {
+      recipes,
+    },
+    revalidate: 60,
+  };
+};
+
+export default function Home({ recipes }: { recipes: IRecipeCard }) {
   const [textSearch, setTextSearch] = useState("");
   const router = useRouter();
 
@@ -43,7 +84,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <PopularRecipes />
+      <PopularRecipes recipes={recipes} />
     </>
   );
 }

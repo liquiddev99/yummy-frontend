@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiClock } from "react-icons/fi";
 import { GiCookingPot } from "react-icons/gi";
+import { v4 as uuidv4 } from "uuid";
 
 import MealTag from "./MealTag";
 
@@ -42,7 +43,7 @@ export default function RecipeCard({
                 {mealTags && (
                   <>
                     {mealTags.map((mealTag) => (
-                      <MealTag key={crypto.randomUUID()} mealTag={mealTag} />
+                      <MealTag key={uuidv4()} mealTag={mealTag} />
                     ))}
                   </>
                 )}
