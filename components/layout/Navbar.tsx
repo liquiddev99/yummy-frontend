@@ -2,19 +2,29 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Dancing_Script } from "@next/font/google";
+import Cookies from "js-cookie";
+import { BiUserCircle } from "react-icons/bi";
+
+import SignupModal from "../modal/SignupModal";
+
+import { useAuth } from "hooks/auth";
+import LoginModal from "../modal/LoginModal";
 
 const dancing = Dancing_Script({ subsets: ["latin"] });
 
 export default function Navbar() {
   const router = useRouter();
+  const isAuth = useAuth();
   const [textSearch, setTextSearch] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [signup, setSignup] = useState(false);
+  const [login, setLogin] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextSearch(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(textSearch);
     router.push(`/search?q=${textSearch}`);
   };
 
@@ -32,19 +42,35 @@ export default function Navbar() {
             onChange={handleChange}
           />
         </form>
-        <Link
-          href="/signup"
-          className="py-1 px-6 rounded-xl border border-red-500 text-red-500 mr-5"
-        >
-          Sign Up
-        </Link>
-        <Link
-          href="/signin"
-          className="py-1 px-6 rounded-xl border border-red-500 bg-red-500 text-slate-100"
-        >
-          Sign In
-        </Link>
+        {!isAuth ? (
+          <>
+            <div
+              className="py-1 px-6 rounded-xl border border-red-500 text-red-500 mr-5 cursor-pointer"
+              onClick={() => setSignup(true)}
+            >
+              Sign Up
+            </div>
+            <div
+              className="py-1 px-6 rounded-xl border border-red-500 bg-red-500 text-slate-100 cursor-pointer"
+              onClick={() => setLogin(true)}
+            >
+              Sign In
+            </div>
+          </>
+        ) : (
+          <div
+            onClick={() => {
+              Cookies.remove("auth");
+              setRefresh(!refresh);
+            }}
+            className="cursor-pointer"
+          >
+            <BiUserCircle className="h-8 w-8" />
+          </div>
+        )}
       </div>
+      <SignupModal isOpen={signup} setIsOpen={setSignup} />
+      <LoginModal isOpen={login} setIsOpen={setLogin} />
     </div>
   );
 }

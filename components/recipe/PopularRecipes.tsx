@@ -1,6 +1,11 @@
+import { IRecipeCard } from "@/types/recipe";
 import RecipeCardList from "./RecipeCardList";
 
-export default function PopularRecipes({ recipes }: { recipes: any }) {
+export default function PopularRecipes({
+  recipes,
+}: {
+  recipes: IRecipeCard[];
+}) {
   return (
     <div className="layout-center">
       <div className="text-center mb-8">

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { GetStaticProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import PopularRecipes from "components/recipe/PopularRecipes";
 import { gql } from "@apollo/client";
@@ -36,7 +36,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  return {
+  return { 
     props: {
       recipes,
     },
@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default function Home({ recipes }: { recipes: IRecipeCard }) {
+export default function Home({ recipes }: { recipes: IRecipeCard[] }) {
   const [textSearch, setTextSearch] = useState("");
   const router = useRouter();
 
@@ -69,7 +69,7 @@ export default function Home({ recipes }: { recipes: IRecipeCard }) {
         <div className="w-full h-full bg-black bg-opacity-70">
           <div className="h-[600px] flex flex-col items-center justify-center mb-10 pb-10">
             <h2 className="text-6xl mb-3 font-semibold">
-              The best place to find your recipe
+              Discover a world of flavors with us
             </h2>
             <div>Want to learn cook but confused how to start?</div>
             <div className="mb-3">No need to worry again</div>

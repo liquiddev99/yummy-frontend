@@ -6,6 +6,7 @@ import Image from "next/image";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BsPeople } from "react-icons/bs";
 import { HiOutlineFire } from "react-icons/hi";
+import { GiCookingPot } from "react-icons/gi";
 import { v4 as uuidv4 } from "uuid";
 
 import MealTag from "../../components/recipe/MealTag";
@@ -22,8 +23,10 @@ const lora = Lora({
 const RECIPE_BY_ID = gql`
   query Recipe($id: ID!) {
     recipe(id: $id) {
+      id
       databaseId
       totalTime
+      tags
       totalTimeInSeconds
       name
       rating
@@ -86,6 +89,7 @@ const RECIPE_BY_ID = gql`
 
 export default function Recipe() {
   const [recipe, setRecipe] = useState<IRecipe>();
+  const [loadingImage, setLoadingImage] = useState(true);
   const router = useRouter();
   const { id } = router.query;
   const { loading, error, data } = useQuery(RECIPE_BY_ID, {
@@ -94,9 +98,16 @@ export default function Recipe() {
 
   useEffect(() => {
     if (!data) return;
-    console.log(data.recipe);
     setRecipe(data.recipe);
   }, [data]);
+
+  useEffect(() => {
+    if (loading) {
+      setLoadingImage(true);
+      setRecipe(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   if (loading) return <DetailRecipeSkeleton />;
   if (error)
@@ -108,12 +119,19 @@ export default function Recipe() {
         <div>
           <div className="flex">
             <div className="w-[43%] min-h-[350px] max-h-[420px] overflow-hidden relative">
+              {loadingImage && (
+                <div className="h-full w-full flex items-center justify-center animate-pulse bg-slate-100">
+                  <GiCookingPot className="h-[4.5rem] w-[4.5rem]" />
+                </div>
+              )}
               <Image
                 src={recipe.mainImage}
                 alt="Recipe"
                 fill={true}
+                sizes="35vw"
                 style={{ objectFit: "cover" }}
                 className="rounded"
+                onLoad={() => setLoadingImage(false)}
               />
             </div>
             <div className="ml-5 flex-grow flex flex-col">
@@ -181,7 +199,7 @@ export default function Recipe() {
               </ol>
             </div>
           </div>
-          <SimilarRecipes />
+          <SimilarRecipes tags={recipe.tags} initId={recipe.id} />
         </div>
       ) : (
         <p>Not Found</p>

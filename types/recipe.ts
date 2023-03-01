@@ -11,6 +11,7 @@ export interface IRecipe {
   name: string;
   totalTime: string;
   mainImage: string;
+  tags: string[];
   mealTags: string[];
   rating: string;
   authorAvatar: string;

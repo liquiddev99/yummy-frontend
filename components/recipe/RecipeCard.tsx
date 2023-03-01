@@ -30,6 +30,7 @@ export default function RecipeCard({
             src={mainImage}
             alt="Recipe"
             fill={true}
+            sizes="25vw"
             style={{ objectFit: "cover" }}
             className={`rounded-xl`}
             onLoad={() => setLoadingImage(false)}
