@@ -1,7 +1,15 @@
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export function useAuth() {
-  const token = Cookies.get("auth");
+  const [isAuth, setIsAuth] = useState(false);
+  const [verifying, setVerifying] = useState(true);
+  const flag = Cookies.get("isAuth");
 
-  return Boolean(token);
+  useEffect(() => {
+    setIsAuth(Boolean(flag));
+    setVerifying(false);
+  }, [flag]);
+
+  return { isAuth, verifying };
 }

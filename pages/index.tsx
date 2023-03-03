@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { GetStaticProps } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import PopularRecipes from "components/recipe/PopularRecipes";
 import { gql } from "@apollo/client";
+import { AiOutlineSearch } from "react-icons/ai";
 
 import client from "utils/apolloClient";
 import { IRecipeCard } from "types/recipe";
@@ -36,7 +37,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  return { 
+  return {
     props: {
       recipes,
     },
@@ -73,10 +74,17 @@ export default function Home({ recipes }: { recipes: IRecipeCard[] }) {
             </h2>
             <div>Want to learn cook but confused how to start?</div>
             <div className="mb-3">No need to worry again</div>
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center bg-white py-[0.15rem] rounded-md"
+            >
+              <label htmlFor="indexSearch" className="cursor-pointer">
+                <AiOutlineSearch className="h-6 w-6 ml-2 text-slate-700" />
+              </label>
               <input
                 type="text"
-                className="text-slate-800 px-2 py-1 rounded outline-none w-72"
+                id="indexSearch"
+                className="text-slate-800 px-2 py-1 text-[1.05rem] rounded outline-none w-72"
                 placeholder="Search for Recipes"
                 onChange={handleChange}
               />
